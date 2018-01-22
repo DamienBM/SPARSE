@@ -3,8 +3,10 @@ close all;
 
 global nb_pixel_dct_block nb_pixel_fft_block P
 
-Im = im2double(imread('C:\Users\Damien\Documents\MATLAB\examen-TI\database\basket.jpg'));
-infos = dir('C:\Users\Damien\Documents\MATLAB\examen-TI\database\basket.jpg');
+file = 'C:\Users\Damien\Documents\MATLAB\examen-TI\database\basket.jpg';
+
+Im = im2double(imread(file));
+infos = dir(file);
 init_byte = infos.bytes;
 
 figure;
@@ -28,106 +30,115 @@ Im_fft = fftshift(Im_fft);
 Im_DCT = dct2(Im);
 
 %% Boucle for pour DCT et TF globale (sur toute l'image) : méthode classique
-for k = 1:N
-    % Seuillage
-    %k = 10;
-    A_dct_max = max(max(abs(Im_DCT)));
-    A_fft_max = max(max(abs(Im_fft)));
-    seuil_fft = A_fft_max/(2^k);
-    seuil_dct = A_dct_max/(2^k);
-
-    Im_fft_th = zeros(size(Im_fft,1),size(Im_fft,2));
-    Im_dct_th = zeros(size(Im_DCT,1),size(Im_DCT,2));
-    
-    nb_pixel_fft = 0;
-    nb_pixel_dct = 0;
-
-    for i=1:size(Im_fft,1)
-        for j=1:size(Im_fft,2)
-            if(abs(Im_fft(i,j))>=seuil_fft)
-                Im_fft_th(i,j) = Im_fft(i,j);
-                nb_pixel_fft = nb_pixel_fft +1;
-            end
-        end
-    end
-
-    for i=1:size(Im_DCT,1)
-        for j=1:size(Im_DCT,2)
-            if(abs(Im_DCT(i,j))>=seuil_dct)
-                Im_dct_th(i,j) = Im_DCT(i,j);
-                nb_pixel_dct = nb_pixel_dct +1;
-            end
-        end
-    end
-
-%     imwrite(Im_dct_th,'test_dct.jpg');
-%     infos_compr_dct = dir('test_dct.jpg');
-%     compr_byte_dct = infos_compr_dct.bytes;
-%     
-%     imwrite(Im_fft_th,'test_fft.jpg');
-%     infos_compr_fft = dir('test_fft.jpg');
-%     compr_byte_fft = infos_compr_fft.bytes;
-    
-    Im_ifft = ifftshift(Im_fft_th);
-    Im_ifft = ifft2(Im_ifft);
-    Im_iDCT = idct2(Im_dct_th);
-
-%     figure;
-%     imshow(Im_ifft);
+% for k = 1:N
+%     % Seuillage
+%     %k = 10;
+%     A_dct_max = max(max(abs(Im_DCT)));
+%     A_fft_max = max(max(abs(Im_fft)));
+%     seuil_fft = A_fft_max/(2^k);
+%     seuil_dct = A_dct_max/(2^k);
 % 
-%     figure;
-%     imshow(Im_iDCT);
-
-    % figure;
-    % colormap gray;
-    % imagesc(abs(Im_ifft));
-
-    % figure;
-    % colormap gray;
-    % imagesc(Im_iDCT);
-
-    % Calcul d'erreur : erreur quadratique moyenne (non perceptuels)
-
-    erreur_fft = (Im - Im_ifft).^2;
-    erreur_dct_block = (Im - Im_iDCT).^2;
-
-    avg_erreur_fft(k,1) = mean(mean(erreur_fft));
-    avg_erreur_dct(k,1) = mean(mean(erreur_dct_block));
-   
-    taux_compr_dct(k,1) = taille/nb_pixel_dct;
-    taux_compr_fft(k,1) = taille/nb_pixel_fft;
-    
-end
+%     Im_fft_th = zeros(size(Im_fft,1),size(Im_fft,2));
+%     Im_dct_th = zeros(size(Im_DCT,1),size(Im_DCT,2));
+%     
+%     nb_pixel_fft = 0;
+%     nb_pixel_dct = 0;
+% 
+%     for i=1:size(Im_fft,1)
+%         for j=1:size(Im_fft,2)
+%             if(abs(Im_fft(i,j))>=seuil_fft)
+%                 Im_fft_th(i,j) = Im_fft(i,j);
+%                 nb_pixel_fft = nb_pixel_fft +1;
+%             end
+%         end
+%     end
+% 
+%     for i=1:size(Im_DCT,1)
+%         for j=1:size(Im_DCT,2)
+%             if(abs(Im_DCT(i,j))>=seuil_dct)
+%                 Im_dct_th(i,j) = Im_DCT(i,j);
+%                 nb_pixel_dct = nb_pixel_dct +1;
+%             end
+%         end
+%     end
+% 
+% %     imwrite(Im_dct_th,'test_dct.jpg');
+% %     infos_compr_dct = dir('test_dct.jpg');
+% %     compr_byte_dct = infos_compr_dct.bytes;
+% %     
+% %     imwrite(Im_fft_th,'test_fft.jpg');
+% %     infos_compr_fft = dir('test_fft.jpg');
+% %     compr_byte_fft = infos_compr_fft.bytes;
+%     
+%     Im_ifft = ifftshift(Im_fft_th);
+%     Im_ifft = ifft2(Im_ifft);
+%     Im_iDCT = idct2(Im_dct_th);
+% 
+% %     figure;
+% %     imshow(Im_ifft);
+% % 
+% %     figure;
+% %     imshow(Im_iDCT);
+% 
+%     % figure;
+%     % colormap gray;
+%     % imagesc(abs(Im_ifft));
+% 
+%     % figure;
+%     % colormap gray;
+%     % imagesc(Im_iDCT);
+% 
+%     % Calcul d'erreur : erreur quadratique moyenne (non perceptuels)
+% 
+%     erreur_fft = (Im - Im_ifft).^2;
+%     erreur_dct_block = (Im - Im_iDCT).^2;
+% 
+%     avg_erreur_fft(k,1) = mean(mean(erreur_fft));
+%     avg_erreur_dct(k,1) = mean(mean(erreur_dct_block));
+%    
+%     taux_compr_dct(k,1) = taille/nb_pixel_dct;
+%     taux_compr_fft(k,1) = taille/nb_pixel_fft;
+% end
 
 %% Boucle pour DCT et TF locale (par bloc sur l'image) : méthode élaborée
 
-P = 7; % valeur de la puissance de 2 dans les fonctions de blockproc
-nb_bloc = 64; % exemple : nb_bloc = 2 => 2 blocs par ligne
-taille_block = size(Im,1)/nb_bloc;
-nb_times = nb_bloc^2;
+P = 8; % valeur de la puissance de 2 dans les fonctions de blockproc
+nb_bloc = 1; % exemple : nb_bloc = 2 => 2 blocs par ligne
+compteur = 1;
 
-block = [taille_block taille_block];
-fun_anonym_fft = @(block_struct) fun_fft(block_struct);
-Im_res_fft = blockproc(Im,block,fun_anonym_fft);%,'UseParallel',true);   
+while (nb_bloc < 128) 
+    taille_block = size(Im,1)/nb_bloc;
+    nb_times = nb_bloc^2;
 
-fun_anonym_dct = @(block_struct) fun_dct(block_struct);
-Im_res_dct = blockproc(Im,block,fun_anonym_dct);%,'UseParallel',true);
+    block = [taille_block taille_block];
+    fun_anonym_fft = @(block_struct) fun_fft(block_struct);
+    Im_res_fft = blockproc(Im,block,fun_anonym_fft);%,'UseParallel',true);   
 
-erreur_fft_block = (Im - Im_res_fft).^2;
-erreur_dct_block = (Im - Im_res_dct).^2;
+    fun_anonym_dct = @(block_struct) fun_dct(block_struct);
+    Im_res_dct = blockproc(Im,block,fun_anonym_dct);%,'UseParallel',true);
 
-avg_erreur_fft_block = mean(mean(erreur_fft_block));
-avg_erreur_dct_block = mean(mean(erreur_dct_block));
+    erreur_fft_block = (Im - Im_res_fft).^2;
+    erreur_dct_block = (Im - Im_res_dct).^2;
 
-taux_compr_dct_block = taille/(sum(nb_pixel_dct_block));
-taux_compr_fft_block = taille/(sum(nb_pixel_fft_block));
+    avg_erreur_fft_block(compteur,1) = mean(mean(erreur_fft_block));
+    avg_erreur_dct_block(compteur,1) = mean(mean(erreur_dct_block));
 
-figure;
-imshow(Im_res_fft);
+%     taux_compr_dct_block(compteur,1) = 1/(taille/(sum(nb_pixel_dct_block)))*100;
+%     taux_compr_fft_block(compteur,1) = 1/(taille/(sum(nb_pixel_fft_block)))*100;
+    
+    taux_compr_dct_block(compteur,1) = taille/(sum(nb_pixel_dct_block));
+    taux_compr_fft_block(compteur,1) = taille/(sum(nb_pixel_fft_block));
+    
+    compteur = compteur + 1;
+    nb_bloc = nb_bloc*2;
 
-figure;
-imshow(Im_res_dct);
+% figure;
+% imshow(Im_res_fft);
+% 
+% figure;
+% imshow(Im_res_dct);
 
+end
 %% Affichage de l'erreur
 % figure;
 % plot(1:10,avg_erreur_fft);
@@ -152,9 +163,42 @@ imshow(Im_res_dct);
 %% Courbe erreur vs taux de compression
 % figure;
 % plot(taux_compr_fft,avg_erreur_fft);
+% xlabel('taux de compression : taille totale/nb pixel utile');
+% ylabel('erreur moyenne quadratique');
 % hold on;
 % % figure;
 % plot(taux_compr_dct,avg_erreur_dct);
+% legend('FFT','DCT');
+
+%% Affichage de l'erreur : block version
+% figure;
+% plot(1:7,avg_erreur_fft_block);
+% ylabel('Valeur de l''erreur quadratique moyenne FFT par blocs');
+% xlabel('Valeurs de nb_bloc allant de 1 à 64');
+% figure;
+% plot(1:7,avg_erreur_dct_block);
+% ylabel('Valeur de l''erreur quadratique moyenne DCT par blocs');
+% xlabel('Valeurs nb_bloc allant de 1 à 64');
+
+%% Affichage taux de compression : block version
+
+% figure;
+% plot(1:7,taux_compr_fft_block);
+% ylabel('Valeur du taux de compression FFT par blocs');
+% xlabel('Valeurs de nb_bloc allant de 1 à 64');
+% figure;
+% plot(1:7,taux_compr_dct_block);
+% ylabel('Valeur du taux de compression DCT par blocs');
+% xlabel('Valeurs de nb_bloc allant de 1 à 64');
+
+%% Courbe erreur vs taux de compression : block version
+figure;
+plot(taux_compr_fft_block,(avg_erreur_fft_block));
+xlabel('taux de compression');
+ylabel('erreur moyenne quadratique');
+hold on;
+plot(taux_compr_dct_block,(avg_erreur_dct_block));
+legend('FFT','DCT');
 
 %% Function handle for blockproc
 function M = fun_fft(block_struct) 
@@ -162,8 +206,8 @@ global nb_pixel_fft_block
 global P
 Im_fft = fft2(block_struct.data);
 seuil = max(max(abs(Im_fft)))/(2^P);
-Im_fft_seuil_bw = (abs(Im_fft)>seuil);
-nb_pixel_fft_block = sum(cumsum(Im_fft_seuil_bw,2));
+Im_fft_seuil_bw = (abs(Im_fft)>=seuil);
+nb_pixel_fft_block = sum(sum(Im_fft_seuil_bw,2));
 Im_fft_seuil = Im_fft_seuil_bw.*Im_fft;
 M = ifft2(Im_fft_seuil);
 end
@@ -173,8 +217,8 @@ global nb_pixel_dct_block
 global P
 Im_dct = dct2(block_struct.data);
 seuil = max(max(abs(Im_dct)))/(2^P);
-Im_dct_seuil_bw = (abs(Im_dct)>seuil);
-nb_pixel_dct_block = sum(cumsum(Im_dct_seuil_bw,2));
+Im_dct_seuil_bw = (abs(Im_dct)>=seuil);
+nb_pixel_dct_block = sum(sum(Im_dct_seuil_bw,2));
 Im_dct_seuil = Im_dct_seuil_bw.*Im_dct;
 M = idct2(Im_dct_seuil);
 end
