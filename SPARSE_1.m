@@ -3,8 +3,8 @@ close all;
 
 global nb_pixel_dct_block nb_pixel_fft_block P
 
-file = 'C:\Users\Damien\Documents\MATLAB\examen-TI\database\basket.jpg';
-
+%file = 'C:\Users\Damien\Documents\MATLAB\examen-TI\database\basket.jpg';
+file = 'C:\Users\Damien\Documents\MATLAB\SPARSE\BDD\artificial.pgm';
 Im = im2double(imread(file));
 infos = dir(file);
 init_byte = infos.bytes;
@@ -30,6 +30,7 @@ Im_fft = fftshift(Im_fft);
 Im_DCT = dct2(Im);
 
 %% Boucle for pour DCT et TF globale (sur toute l'image) : méthode classique
+
 % for k = 1:N
 %     % Seuillage
 %     %k = 10;
@@ -61,14 +62,6 @@ Im_DCT = dct2(Im);
 %             end
 %         end
 %     end
-% 
-% %     imwrite(Im_dct_th,'test_dct.jpg');
-% %     infos_compr_dct = dir('test_dct.jpg');
-% %     compr_byte_dct = infos_compr_dct.bytes;
-% %     
-% %     imwrite(Im_fft_th,'test_fft.jpg');
-% %     infos_compr_fft = dir('test_fft.jpg');
-% %     compr_byte_fft = infos_compr_fft.bytes;
 %     
 %     Im_ifft = ifftshift(Im_fft_th);
 %     Im_ifft = ifft2(Im_ifft);
@@ -80,14 +73,6 @@ Im_DCT = dct2(Im);
 % %     figure;
 % %     imshow(Im_iDCT);
 % 
-%     % figure;
-%     % colormap gray;
-%     % imagesc(abs(Im_ifft));
-% 
-%     % figure;
-%     % colormap gray;
-%     % imagesc(Im_iDCT);
-% 
 %     % Calcul d'erreur : erreur quadratique moyenne (non perceptuels)
 % 
 %     erreur_fft = (Im - Im_ifft).^2;
@@ -95,18 +80,19 @@ Im_DCT = dct2(Im);
 % 
 %     avg_erreur_fft(k,1) = mean(mean(erreur_fft));
 %     avg_erreur_dct(k,1) = mean(mean(erreur_dct_block));
-%    
+% 
 %     taux_compr_dct(k,1) = taille/nb_pixel_dct;
 %     taux_compr_fft(k,1) = taille/nb_pixel_fft;
 % end
 
 %% Boucle pour DCT et TF locale (par bloc sur l'image) : méthode élaborée
 
-P = 8; % valeur de la puissance de 2 dans les fonctions de blockproc
+P = 4; % valeur de la puissance de 2 dans les fonctions de blockproc
 nb_bloc = 1; % exemple : nb_bloc = 2 => 2 blocs par ligne
 compteur = 1;
+limit = 2^10;
 
-while (nb_bloc < 128) 
+while (nb_bloc < limit) 
     taille_block = size(Im,1)/nb_bloc;
     nb_times = nb_bloc^2;
 
@@ -126,19 +112,20 @@ while (nb_bloc < 128)
 %     taux_compr_dct_block(compteur,1) = 1/(taille/(sum(nb_pixel_dct_block)))*100;
 %     taux_compr_fft_block(compteur,1) = 1/(taille/(sum(nb_pixel_fft_block)))*100;
     
-    taux_compr_dct_block(compteur,1) = taille/(sum(nb_pixel_dct_block));
-    taux_compr_fft_block(compteur,1) = taille/(sum(nb_pixel_fft_block));
+    taux_compr_dct_block(compteur,1) = taille/nb_pixel_dct_block;
+    taux_compr_fft_block(compteur,1) = taille/nb_pixel_fft_block;
     
     compteur = compteur + 1;
     nb_bloc = nb_bloc*2;
 
-% figure;
-% imshow(Im_res_fft);
-% 
-% figure;
-% imshow(Im_res_dct);
+figure;
+imshow(Im_res_fft);
+
+figure;
+imshow(Im_res_dct);
 
 end
+
 %% Affichage de l'erreur
 % figure;
 % plot(1:10,avg_erreur_fft);
