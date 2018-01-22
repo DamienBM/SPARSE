@@ -87,7 +87,7 @@ Im_DCT = dct2(Im);
 
 %% Boucle pour DCT et TF locale (par bloc sur l'image) : méthode élaborée
 
-P = 4; % valeur de la puissance de 2 dans les fonctions de blockproc
+P = 8; % valeur de la puissance de 2 dans les fonctions de blockproc
 nb_bloc = 1; % exemple : nb_bloc = 2 => 2 blocs par ligne
 compteur = 1;
 limit = 2^10;
@@ -118,11 +118,11 @@ while (nb_bloc < limit)
     compteur = compteur + 1;
     nb_bloc = nb_bloc*2;
 
-figure;
-imshow(Im_res_fft);
-
-figure;
-imshow(Im_res_dct);
+% figure;
+% imshow(Im_res_fft);
+% 
+% figure;
+% imshow(Im_res_dct);
 
 end
 
