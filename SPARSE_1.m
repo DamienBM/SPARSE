@@ -7,6 +7,7 @@ global nb_pixel_dct_block nb_pixel_fft_block P
 nb_pixel_fft_block = 0;
 nb_pixel_dct_block = 0;
 P = 8; % valeur de la puissance de 2 dans les fonctions de blockproc
+N=25;
 
 nb_bloc = 256; % exemple : nb_bloc = 2 => 2 blocs par ligne
 compteur = 1;
@@ -16,13 +17,10 @@ limit = 2^9;
 file = 'C:\Users\Damien\Documents\MATLAB\SPARSE\BDD\artificial.pgm';
 
 Im = im2double(imread(file));
-infos = dir(file);
-init_byte = infos.bytes;
 
-figure;
-imshow(Im);
+% figure;
+% imshow(Im);
 
-N=10;
 taille = size(Im,1)*size(Im,2);
 
 avg_erreur_fft = zeros(N,1);
@@ -37,14 +35,14 @@ Im_fft = fft2(Im);
 % imshow(log(abs(Im_fft)));
 
 Im_fft = fftshift(Im_fft);
+
 Im_DCT = dct2(Im);
 
 %% Boucle for pour DCT et TF globale (sur toute l'image) : méthode classique
-
-for k = 1:N
+tic;
+for k = 15:N
     P=k;
-    % Seuillage
-    %k = 10;
+    
     A_dct_max = max(max(abs(Im_DCT)));
     A_fft_max = max(max(abs(Im_fft)));
     seuil_fft = A_fft_max/(2^k);
@@ -89,11 +87,11 @@ for k = 1:N
     erreur_fft = (Im - Im_ifft).^2;
     erreur_dct_block = (Im - Im_iDCT).^2;
 
-    avg_erreur_fft(k,1) = mean(mean(erreur_fft));
-    avg_erreur_dct(k,1) = mean(mean(erreur_dct_block));
+    avg_erreur_fft(compteur,1) = mean(mean(erreur_fft));
+    avg_erreur_dct(compteur,1) = mean(mean(erreur_dct_block));
 
-    taux_compr_dct(k,1) = taille/nb_pixel_dct;
-    taux_compr_fft(k,1) = taille/nb_pixel_fft;
+    taux_compr_dct(compteur,1) = taille/nb_pixel_dct;
+    taux_compr_fft(compteur,1) = taille/nb_pixel_fft;
     
     taille_block = size(Im,1)/nb_bloc;
     %nb_times = nb_bloc^2;
@@ -123,7 +121,7 @@ for k = 1:N
     nb_pixel_dct_block = 0;
      
 end
-
+temps=toc;
 %% Boucle pour DCT et TF locale (par bloc sur l'image) : méthode élaborée
 
 % while( nb_bloc < limit)
