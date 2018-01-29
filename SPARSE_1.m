@@ -12,9 +12,9 @@ MAX=10;
 
 nb_bloc = 16; % exemple : nb_bloc = 2 => 2 blocs par ligne
 compteur = 1;
-limit = 2^9;
+limit = 2^8;
 
-file = 'C:\Users\Damien\Documents\MATLAB\SPARSE\test.bpm';
+file = 'C:\Program Files\MATLAB\R2017b\toolbox\images\imdata\cameraman.tif';
 
 Im = im2double(imread(file));
 % Im = rgb2gray(Im);
