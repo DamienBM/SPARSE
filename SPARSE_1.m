@@ -1,5 +1,5 @@
 close all;
-
+clear all;
 %% Début programme
 
 global nb_pixel_dct_block nb_pixel_fft_block P
@@ -10,11 +10,11 @@ P = 8; % valeur de la puissance de 2 dans les fonctions de blockproc
 MIN=0;
 MAX=10;
 
-nb_bloc = 1; % exemple : nb_bloc = 2 => 2 blocs par ligne
+nb_bloc = 16; % exemple : nb_bloc = 2 => 2 blocs par ligne
 compteur = 1;
-limit = 2^11;
+limit = 2^9;
 
-file = 'C:\Users\Damien\Documents\MATLAB\examen-TI\database\bear_1.jpg';
+file = 'C:\Users\Damien\Documents\MATLAB\SPARSE\test.bpm';
 
 Im = im2double(imread(file));
 % Im = rgb2gray(Im);
@@ -24,11 +24,11 @@ Im = im2double(imread(file));
 
 taille = size(Im,1)*size(Im,2);
 
-avg_erreur_fft = zeros(MAX-MIN,1);
-avg_erreur_dct = zeros(MAX-MIN,1);
-
-taux_compr_fft = zeros(MAX-MIN,1);
-taux_compr_dct = zeros(MAX-MIN,1);
+% avg_erreur_fft = zeros(MAX-MIN,1);
+% avg_erreur_dct = zeros(MAX-MIN,1);
+% 
+% taux_compr_fft = zeros(MAX-MIN,1);
+% taux_compr_dct = zeros(MAX-MIN,1);
 
 % avg_erreur_fft_block = zeros(MAX-MIN,1);
 % avg_erreur_dct_block = zeros(MAX-MIN,1);
@@ -135,8 +135,6 @@ taux_compr_dct = zeros(MAX-MIN,1);
 while( nb_bloc < limit)
     
     taille_block = size(Im,1)/nb_bloc;
-    %nb_times = nb_bloc^2;
-
     block = [taille_block taille_block];
     
     fun_anonym_fft = @(block_struct) fun_fft(block_struct);
@@ -159,13 +157,15 @@ while( nb_bloc < limit)
     
     compteur = compteur + 1;
     nb_bloc = nb_bloc*2;
+    
+    nb_pixel_dct_block = 0;
+    nb_pixel_fft_block = 0;
 
 %     figure;
 %     imshow(Im_res_fft);
 % 
 %     figure;
 %     imshow(Im_res_dct);
-
 end
 
 %% Affichage de l'erreur
@@ -222,11 +222,11 @@ end
 
 %% Courbe erreur vs taux de compression : block version
 figure;
-plot(taux_compr_fft_block(3:8,1),avg_erreur_fft_block(3:8,1));
+plot(taux_compr_fft_block,avg_erreur_fft_block);
 xlabel('taux de compression');
 ylabel('erreur moyenne quadratique');
 hold on;
-plot(taux_compr_dct_block(3:8,1),avg_erreur_dct_block(3:8,1));
+plot(taux_compr_dct_block,avg_erreur_dct_block);
 legend('FFT','DCT');
 
 %% Courbe erreur vs taux de compression : block version VS Naïve
